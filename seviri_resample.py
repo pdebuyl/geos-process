@@ -8,10 +8,11 @@ SEVIRI_CHANNELS = ['VIS006', 'VIS008', 'IR_016', 'IR_039', 'WV_062', 'WV_073', '
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input', nargs='+')
-parser.add_argument('--out')
+parser.add_argument('--reader', default='seviri_l1b_native')
+parser.add_argument('--out', required=True)
 args = parser.parse_args()
 
-sev_scene = satpy.Scene(reader="seviri_l1b_native", filenames=args.input)
+sev_scene = satpy.Scene(reader=args.reader, filenames=args.input)
 sev_scene.load(SEVIRI_CHANNELS)
 
 projection = {'proj': 'latlong', 'datum': 'WGS84'}
