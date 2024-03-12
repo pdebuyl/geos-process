@@ -7,8 +7,18 @@ shift
 SLOT_END="${1}"
 shift
 
+storage_dir="/data/ftp/anonymous/ECONTRAIL"
+
 if [ "${SLOT_END}" = "" ]
 then
+    ls ${storage_dir}/MSG[1-4]/${SLOT:0:4}/${SLOT:4:2}/${SLOT:6:2}/MSG[1-4]_REGION_NA_${SLOT}.nc 1>/dev/null 2>/dev/null
+    ls_success=$?
+    if [[ "${ls_success}" -eq 0 ]]
+    then
+        echo "slot ${SLOT} already processed"
+	exit 0
+    fi
+
     YYYY="${SLOT:0:4}"
     MM="${SLOT:4:2}"
     DD="${SLOT:6:2}"
@@ -22,12 +32,10 @@ function compress_ncfile() {
     if [[ -e "${FILE}" ]]
     then
         tmp_file="${FILE}.tmp"
-        h5repack -m 1048576 -f SHUF -f GZIP=3 "${FILE}" "${tmp_file}" && \
+        /usr/bin/h5repack -m 1048576 -f SHUF -f GZIP=3 "${FILE}" "${tmp_file}" && \
         mv "${tmp_file}" "${FILE}"
     fi
 }
-
-echo "Running from ${script_dir} for slot ${SLOT}"
 
 PROCESS_DIR="$(mktemp -d)"
 echo "PROCESS_DIR ${PROCESS_DIR}"
@@ -43,8 +51,20 @@ do
     DATAFILE="$(xml_grep --text_only dataObject/path "${PROCESS_DIR}/manifest.xml" )"
     rm "${PROCESS_DIR}/manifest.xml" "${PROCESS_DIR}/EOPMetadata.xml" "${PROCESS_DIR}/${ZFILE}"
     echo "${DATAFILE} available - processing"
-    conda run -n py311 python "${script_dir}/seviri_resample.py" "${PROCESS_DIR}/${DATAFILE}" --out "${PROCESS_DIR}/${DATAFILE%.nat}.nc"
+    /sdata/anaconda/condabin/conda run -n p39 python "${script_dir}/seviri_resample.py" "${PROCESS_DIR}/${DATAFILE}" --out "${PROCESS_DIR}/${DATAFILE%.nat}.nc"
     rm "${PROCESS_DIR}/${DATAFILE}"
     compress_ncfile "${PROCESS_DIR}/${DATAFILE%.nat}.nc"
+    if [[ "${DATAFILE}" =~ MSG[1-4]-SEVI-MSG15-0100-NA-.*-NA.nat ]]
+    then
+        SAT="${DATAFILE:0:4}"
+        SLOT="${DATAFILE:24:12}"
+        SLOT="$((SLOT-12))"   # Shift slot time by 12 minutes to have nominal start of repeat cycle
+        mv "${PROCESS_DIR}/${DATAFILE%.nat}.nc" "${storage_dir}/${SAT}/${SLOT:0:4}/${SLOT:4:2}/${SLOT:6:2}/${SAT}_REGION_NA_${SLOT}.nc"
+    else
+        echo "Not recognizing filename ${DATAFILE}"
+	exit 1
+    fi
 done
+
+rm -r "${PROCESS_DIR}"
 
