@@ -8,6 +8,7 @@ Status: draft
 import argparse
 import cartopy
 from glob import glob
+import h5py
 import itertools
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,23 +17,16 @@ import pyresample
 import satpy
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('glob', help="glob pattern for input data")
+parser.add_argument('--input', help="filename or glob pattern for input data")
+parser.add_argument('--output', help="Start of path for output data")
 parser.add_argument('--reader', help="Satpy reader name", default="seviri_l1b_hrit")
+parser.add_argument('--channels', help="Channels to load", nargs='+')
+parser.add_argument('--lon0', help="Central longitude of area", type=float, default=-10.)
 args = parser.parse_args()
 
 
-# Load one channel of SEVIRI
-composite = 'ash'
-
-scn = satpy.Scene(reader=args.reader, filenames=glob(args.glob))
-scn.load([composite])
-
-if composite not in ['natural_color', 'ash']:
-    vmin = float(scn[composite].min().compute())
-    vmax = float(scn[composite].max().compute())
-else:
-    vmin = None
-    vmax = None
+scn = satpy.Scene(reader=args.reader, filenames=glob(args.input))
+scn.load(args.channels)
 
 def zone_from_lon(lon):
     """Return UTM zone."""
@@ -40,42 +34,7 @@ def zone_from_lon(lon):
         raise ValueError("Invalid input longitude")
     return int((lon+180)/6) + 1
 
-def restack(data):
-    """Change a NumPy array from the shape [3,Nx,Ny] to [Nx,Ny,3]
-
-    This is necessary for displaying the array as a color image with matplotlib.
-    """
-    if data.shape[0] == 3:
-        s = []
-        for i in range(3):
-            x = data[i,:,:]
-            x_min = x.min()
-            x_max = x.max()
-            x = (x-x_min)/(x_max-x_min)
-            s.append(x)
-        data = np.dstack(s)
-    else:
-        data = scn_ad[composite]
-    return data
-
-def restack_ash(data):
-    """Change a NumPy array from the shape [3,...] to [...,3] and set range to (0,1)
-
-    Only suitable for the ASH RGB composite
-    """
-    ranges = [(-4,2), (-4,+5), (243, 303)]
-    s = []
-    for i in range(3):
-        x_min, x_max = ranges[i]
-        x = np.clip(data[i,:,:], x_min, x_max)
-        x = (x-x_min)/(x_max-x_min)
-        s.append(x)
-    data = np.dstack(s)
-    return data
-
-# ash: -4,+2 -4,+5 243,303
-
-lons = np.linspace(-60, 40, 21)[:-1]
+lons = np.linspace(-50, 50, 21)[:-1] + args.lon0
 lats = np.linspace(20, 70, 11)[::-1][:-1]
 all_ll = list(itertools.product(lons, lats))
 
@@ -100,44 +59,16 @@ for i in range(len(all_ll)):
 
     print(f"{zone=} {area_ll=}")
 
-    w = h = 281
+    w = h = 256
     ad = pyresample.geometry.AreaDefinition('myUTM', 'UTM test zone', 'myUTM', f"+proj=utm +zone={zone}", w, h,
                                             area_extent)
 
     scn_ad = scn.resample(ad)
-    scn_ad.load([composite])
+    scn_ad.load(args.channels)
 
-    params = {
-        'figure.figsize': (1, 1),
-        'figure.subplot.left' : 0.,
-        'figure.subplot.right' : 1.,
-        'figure.subplot.bottom' : 0.,
-        'figure.subplot.top' : 1.,
-        'figure.dpi': w,
-    }
-    plt.rcParams.update(params)
+    output = f"{args.output}_DEG_{90-lat}_{180+lon}.h5"
 
-    plt.clf()
-    plt.gcf().add_subplot(aspect=1)
-    if vmin is not None and vmax is not None:
-        plt.imshow(scn_ad[composite], vmin=vmin, vmax=vmax)
-    elif composite == 'ash':
-        data = restack_ash(scn_ad[composite])
-        plt.imshow(data)
-    else:
-        data = restack(scn_ad[composite])
-        plt.imshow(data)
+    with h5py.File(output, 'w') as out:
+        for c in args.channels:
+            out[c] = scn_ad[c]
 
-    if degree_area:
-        plt.savefig(f"/tmp/tiles/EC_{composite}_DEG_{90-lat}_{180+lon}.png")
-    else:
-        plt.savefig(f"/tmp/tiles/EC_{composite}_DIS_{90-lat}_{180+lon}.png")
-
-if 0:
-    plot_crs = ad.to_cartopy_crs()
-    ax = plt.axes(projection=ad.to_cartopy_crs())
-    ax.coastlines()
-    ax.add_feature(cartopy.feature.BORDERS)
-    plt.imshow(scn_ad[composite], transform=plot_crs, extent=plot_crs.bounds, origin='upper')
-    plt.colorbar()
-    plt.show()
