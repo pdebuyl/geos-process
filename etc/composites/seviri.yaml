@@ -1,0 +1,36 @@
+sensor_name: visir
+
+composites:
+  ash:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+    - compositor: !!python/name:satpy.composites.DifferenceCompositor
+      prerequisites:
+      - 12.0
+      - 10.8
+    - compositor: !!python/name:satpy.composites.DifferenceCompositor
+      prerequisites:
+      - 10.8
+      - 8.7
+    - 10.8
+    standard_name: ash
+
+  ash_red:
+    compositor: !!python/name:satpy.composites.DifferenceCompositor
+    prerequisites:
+      - 12.0
+      - 10.8
+    standard_name: ash_red
+
+  ash_green:
+    compositor: !!python/name:satpy.composites.DifferenceCompositor
+    prerequisites:
+      - 10.8
+      - 8.7
+    standard_name: ash_green
+
+  ash_blue:
+    compositor: !!python/name:satpy.composites.GenericCompositor
+    prerequisites:
+      - 10.8
+    standard_name: ash_blue

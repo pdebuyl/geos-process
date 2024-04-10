@@ -1,0 +1,45 @@
+enhancements:
+  ash_red:
+    standard_name: ash_red
+    sensor: seviri
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: -4.0
+        max_stretch: 2.
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+        kwargs:
+          stretch: linear
+
+  ash_green:
+    standard_name: ash_green
+    sensor: seviri
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: -4.0
+        max_stretch: 5.
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+        kwargs:
+          stretch: linear
+
+  ash_blue:
+    standard_name: ash_blue
+    sensor: seviri
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: 243.
+        max_stretch: 303.
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+        kwargs:
+          stretch: linear
