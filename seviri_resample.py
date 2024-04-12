@@ -29,7 +29,7 @@ sev_scene = satpy.Scene(reader=args.reader, filenames=args.input)
 if args.ash:
     SEVIRI_CHANNELS = SEVIRI_CHANNELS + ASH_CHANNELS
 
-sev_scene.load(SEVIRI_CHANNELS)
+sev_scene.load(SEVIRI_CHANNELS, upper_right_corner='NE')
 
 sev_scene['ash_red'].data = ( (sev_scene['ash_red'].data + 4)/6 * 255).clip(0, 255).astype(np.uint8)
 sev_scene['ash_green'].data = ( (sev_scene['ash_green'].data + 4)/9 * 255).clip(0, 255).astype(np.uint8)
