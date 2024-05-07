@@ -11,8 +11,8 @@ enhancements:
         max_stretch: 2.
     - name: stretch
       method: !!python/name:satpy.enhancements.stretch
-        kwargs:
-          stretch: linear
+      kwargs:
+        stretch: linear
 
   ash_green:
     standard_name: ash_green
@@ -26,8 +26,8 @@ enhancements:
         max_stretch: 5.
     - name: stretch
       method: !!python/name:satpy.enhancements.stretch
-        kwargs:
-          stretch: linear
+      kwargs:
+        stretch: linear
 
   ash_blue:
     standard_name: ash_blue
@@ -41,5 +41,5 @@ enhancements:
         max_stretch: 303.
     - name: stretch
       method: !!python/name:satpy.enhancements.stretch
-        kwargs:
-          stretch: linear
+      kwargs:
+        stretch: linear
