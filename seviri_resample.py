@@ -20,6 +20,7 @@ parser.add_argument('input', nargs='+')
 parser.add_argument('--reader', default='seviri_l1b_native')
 parser.add_argument('--ash', action='store_true')
 parser.add_argument('--create-lat-lon', action='store_true')
+parser.add_argument('--grid002', action='store_true')
 parser.add_argument('--cobra')
 parser.add_argument('--lon0', help="Central longitude of area for UTM vignetting", type=float, default=-10.)
 parser.add_argument('--out')
@@ -47,8 +48,14 @@ if args.cobra:
 
 projection = {'proj': 'latlong', 'datum': 'WGS84'}
 
+w = 2500
+h = 1250
+if args.grid002:
+    w *= 2
+    h *= 2
+
 ad = pyresample.AreaDefinition("euro_eqc", "lat/lon over Europe", "eqc",
-                               width=2500, height=1250, projection=projection,
+                               width=w, height=h, projection=projection,
                                area_extent=(-60, 20, 40, 70))
 ss_scene = sev_scene.resample(ad)
 
