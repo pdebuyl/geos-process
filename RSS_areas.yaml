@@ -1,0 +1,155 @@
+euro:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1000
+    width: 2000
+  area_extent:
+    lower_left_xy: [-20, 40]
+    upper_right_xy: [10, 60]
+
+bel_1:
+  description: lat/lon over Belgium
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 150
+    width: 350
+  area_extent:
+    lower_left_xy: [1, 49]
+    upper_right_xy: [8, 52]
+
+bel:
+  description: lat/lon over Belgium
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 800
+    width: 1000
+  area_extent:
+    lower_left_xy: [2, 49]
+    upper_right_xy: [7, 53]
+
+econtrail:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1250
+    width: 2500
+  area_extent:
+    lower_left_xy: [-60, 20]
+    upper_right_xy: [40, 70]
+
+econtrail_002:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 2500
+    width: 5000
+  area_extent:
+    lower_left_xy: [-60, 20]
+    upper_right_xy: [40, 70]
+
+ECLC0_002:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1024
+    width: 2048
+  area_extent:
+    lower_left_xy: [-20, 35]
+    upper_right_xy: [20, 55]
+
+ECLC1_002:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 2048
+    width: 2048
+  area_extent:
+    lower_left_xy: [-20, 25]
+    upper_right_xy: [20, 65]
+
+ECLC2_002:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1024
+    width: 2048
+  area_extent:
+    lower_left_xy: [-30, 35]
+    upper_right_xy: [20, 60]
+
+ECLC2_002_merc:
+  description: Mercator over Europe
+  projection:
+    proj: merc
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1024
+    width: 2048
+  area_extent:
+    lower_left_xy: [-3339584.72, 4139372.76]
+    upper_right_xy: [2226389.82, 8362698.55]
+
+ECLC2_002_utm_left:
+  description: UTM over Europe
+  projection:
+    proj: utm
+    datum: WGS84
+    no_defs: null
+    type: crs
+    zone: 28
+  shape:
+    height: 1024
+    width: 1024
+  area_extent:
+    lower_left_xy: [-1188659.4132666495, 3875899.1410756665]
+    upper_right_xy: [1618481.324164246, 6654046.023776473]
+
+ECLC2_002_utm_right:
+  description: UTM over Europe
+  projection:
+    proj: utm
+    datum: WGS84
+    no_defs: null
+    type: crs
+    zone: 32
+  shape:
+    height: 1024
+    width: 1024
+  area_extent:
+    lower_left_xy: [-1073695.8840107096, 3874070.933327004]
+    upper_right_xy: [1731665.9794324152, 6652359.681927853]
