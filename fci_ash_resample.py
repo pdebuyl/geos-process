@@ -43,18 +43,9 @@ ss_scene.load(FCI_IR_CHANNELS+[args.composite])
 if args.out:
     ss_scene.save_dataset(args.composite, filename=f"{args.out}_{args.region}.png")
 
-#im = get_enhanced_image(ss_scene[args.composite])
-#data, mode = im.finalize()
-#data_t = data.transpose('y', 'x', 'bands')
-
-#ss_scene[args.composite].data = data[:3,:,:]
-
-# copy_attrs = {'start_time': ss_scene['ir_105'].attrs['start_time'], 'area': ss_scene['ir_105'].attrs['area'], 'standard_name': 'ash_red'}
-# ss_scene['ash_red'] = xr.DataArray(data_t[:,:,0], attrs=copy_attrs, dims=ss_scene['ir_105'].dims)
-# copy_attrs['standard_name'] = 'ash_green'
-# ss_scene['ash_green'] = xr.DataArray(data_t[:,:,1], attrs=copy_attrs, dims=ss_scene['ir_105'].dims)
-# copy_attrs['standard_name'] = 'ash_blue'
-# ss_scene['ash_blue'] = xr.DataArray(data_t[:,:,2], attrs=copy_attrs, dims=ss_scene['ir_105'].dims)
+im = get_enhanced_image(ss_scene[args.composite])
+data, mode = im.finalize()
+ss_scene[args.composite].data = data[:3,:,:]
 
 
 if args.out:
