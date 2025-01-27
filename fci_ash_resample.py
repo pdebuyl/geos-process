@@ -11,21 +11,14 @@ FCI_IR_CHANNELS = [ 'ir_105', 'ir_123', 'ir_133', 'ir_38', 'ir_87', 'ir_97', 'ni
 
 FCI_VIS_CHANNELS = [ 'vis_04', 'vis_05', 'vis_06', 'vis_08', 'vis_09' ]
 
-ASH_CHANNELS = ['ash_red', 'ash_green', 'ash_blue']
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--composite', default='natural_color')
 parser.add_argument('--dir', default='.')
 parser.add_argument('--out', required=True)
 parser.add_argument('--resampler', default='nearest')
 parser.add_argument('--region', required=True)
-parser.add_argument('--utm_lon0', type=float)
-parser.add_argument('--utm_side', choices=["left", "right"])
+parser.add_argument('--nc', action='store_true')
 args = parser.parse_args()
-
-if False:
-    assert args.utm_lon0 is not None
-    assert args.utm_side is not None
 
 ad = pyresample.load_area("RSS_areas.yaml", args.region)
 
@@ -41,13 +34,13 @@ ss_scene = scene.resample(ad, resampler=args.resampler, radius_of_influence=5000
 ss_scene.load(FCI_IR_CHANNELS+[args.composite])
 
 if args.out:
-    ss_scene.save_dataset(args.composite, filename=f"{args.out}_{args.region}.png")
+    ss_scene.save_dataset(args.composite, filename=f"{args.out}_{args.region}_{args.composite}.png")
 
 im = get_enhanced_image(ss_scene[args.composite])
 data, mode = im.finalize()
 ss_scene[args.composite].data = data[:3,:,:]
 
 
-if args.out:
+if args.out and args.nc:
     ss_scene.save_datasets(writer='cf', datasets=FCI_IR_CHANNELS+[args.composite],
                            filename=f"{args.out}_{args.region}.nc", exclude_attrs=['raw_metadata'], include_lonlats=False)
