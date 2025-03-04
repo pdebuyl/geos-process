@@ -23,6 +23,7 @@ parser.add_argument('--create-lat-lon', action='store_true')
 parser.add_argument('--grid002', action='store_true')
 parser.add_argument('--cobra')
 parser.add_argument('--lon0', help="Central longitude of area for UTM vignetting", type=float, default=-10.)
+parser.add_argument('--utm', action='store_true')
 parser.add_argument('--out')
 args = parser.parse_args()
 
@@ -77,7 +78,8 @@ lons = np.linspace(-50, 50, 21)[:-1] + args.lon0
 lats = np.linspace(20, 70, 11)[::-1][:-1]
 all_ll = list(itertools.product(lons, lats))
 
-for i in range(len(all_ll)):
+if args.utm:
+  for i in range(len(all_ll)):
 
     lon, lat = all_ll[i]
 
