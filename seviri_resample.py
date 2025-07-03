@@ -31,7 +31,7 @@ sev_scene = satpy.Scene(reader=args.reader, filenames=args.input)
 if args.ash:
     SEVIRI_CHANNELS = SEVIRI_CHANNELS + ASH_CHANNELS
 
-sev_scene.load(SEVIRI_CHANNELS, upper_right_corner='NE')
+sev_scene.load(ASH_CHANNELS, upper_right_corner='NE')
 
 sev_scene['ash_red'].data = ( (sev_scene['ash_red'].data + 4)/6 * 255).clip(0, 255).astype(np.uint8)
 sev_scene['ash_green'].data = ( (sev_scene['ash_green'].data + 4)/9 * 255).clip(0, 255).astype(np.uint8)
@@ -61,7 +61,7 @@ ad = pyresample.AreaDefinition("euro_eqc", "lat/lon over Europe", "eqc",
 ss_scene = sev_scene.resample(ad)
 
 if args.out:
-    ss_scene.save_datasets(writer='cf', datasets=SEVIRI_CHANNELS, filename=args.out+".nc", exclude_attrs=['raw_metadata'], include_lonlats=False)
+    ss_scene.save_datasets(writer='cf', datasets=ASH_CHANNELS, filename=args.out+".nc", exclude_attrs=['raw_metadata'], include_lonlats=False)
 elif args.ash:
     ss_scene.show(ASH_CHANNELS[0])
 else:
