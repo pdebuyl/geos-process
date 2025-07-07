@@ -153,3 +153,33 @@ ECLC2_002_utm_right:
   area_extent:
     lower_left_xy: [-1073695.8840107096, 3874070.933327004]
     upper_right_xy: [1731665.9794324152, 6652359.681927853]
+
+
+test_00:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 2048
+    width: 2048
+  area_extent:
+    lower_left_xy: [-20, 25]
+    upper_right_xy: [0, 45]
+
+
+EAST_MED_01:
+  description: lat/lon over Eastern Mediterranean
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 450
+    width: 800
+  area_extent:
+    lower_left_xy: [12, 31]
+    upper_right_xy: [28, 40]
