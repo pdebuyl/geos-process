@@ -1,0 +1,29 @@
+BootStrap: debootstrap
+OSVersion: bookworm
+MirrorURL: http://ftp.be.debian.org/debian/
+From: debian:12
+
+%post
+   apt-get -y update
+   apt-get -y install python3-venv git vim
+   mkdir /app
+   cd /app
+   python3 -m venv appenv
+   . /app/appenv/bin/activate
+   pip install satpy netcdf4==1.7.1.post2 h5py==3.11.0 hdf5plugin numpy==1.26.4 h5netcdf
+   git clone https://pdebuyl:u9HW_utX2rDu-93wa9-3@gitlab-me.oma.be/pdebuyl/geos-process.git
+
+%environment
+   export LC_ALL=C
+
+%runscript
+   #!/bin/bash
+   . /app/appenv/bin/activate
+   SLOT="$1"
+   DATA_DIR="/NAMSAT/MTG/MTI1_${SLOT:0:8}"
+   mkdir -p "${DATA_DIR}"
+   exec python /app/geos-process/process_fci_utm.py --slot "${SLOT}" --out-dir "${DATA_DIR}" --size 1024
+
+%labels
+   Author Pierre de Buyl
+
