@@ -1,0 +1,32 @@
+enhancements:
+  ash_22_12_1:
+    standard_name: ash_22_12_1
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: [-4, -4, 243]
+        max_stretch: [2, 5, 303]
+
+  ash_21_12_1:
+    standard_name: ash_21_12_1
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: [-4, -4, 243]
+        max_stretch: [2, 5, 303]
+
+
+  ash_21_22_1:
+    standard_name: ash_21_22_1
+    operations:
+    - name: stretch
+      method: !!python/name:satpy.enhancements.stretch
+      kwargs:
+        stretch: crude
+        min_stretch: [-4, -4, 243]
+        max_stretch: [2, 5, 303]
+
