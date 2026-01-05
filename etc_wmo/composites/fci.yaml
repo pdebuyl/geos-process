@@ -1,0 +1,23 @@
+sensor_name: visir/fci
+
+composites:
+
+  ash:
+    compositor: !!python/name:satpy.composites.core.GenericCompositor
+    prerequisites:
+    - compositor: !!python/name:satpy.composites.arithmetic.DifferenceCompositor
+      prerequisites:
+      - name: ir_123
+        resolution: 2000
+      - name: ir_105
+        resolution: 2000
+    - compositor: !!python/name:satpy.composites.arithmetic.DifferenceCompositor
+      prerequisites:
+      - name: ir_105
+        resolution: 1000
+      - name: ir_87
+        resolution: 2000
+    - name: ir_105
+      resolution: 1000
+    standard_name: ash
+

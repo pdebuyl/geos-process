@@ -1,0 +1,33 @@
+sensor_name: visir/fci
+
+modifiers:
+  sbaf_corrected:
+    modifier: !!python/name:satpy.modifiers.spectral.SBAFSingle
+    coefficients_file: "goes_fci_ash_bands.json"
+
+composites:
+
+  ash:
+    compositor: !!python/name:satpy.composites.core.GenericCompositor
+    prerequisites:
+    - compositor: !!python/name:satpy.composites.arithmetic.DifferenceCompositor
+      prerequisites:
+      - name: ir_123
+        resolution: 2000
+        modifiers: [sbaf_corrected]
+      - name: ir_105
+        resolution: 2000
+        modifiers: [sbaf_corrected]
+    - compositor: !!python/name:satpy.composites.arithmetic.DifferenceCompositor
+      prerequisites:
+      - name: ir_105
+        resolution: 1000
+        modifiers: [sbaf_corrected]
+      - name: ir_87
+        resolution: 2000
+        modifiers: [sbaf_corrected]
+    - name: ir_105
+      resolution: 1000
+      modifiers: [sbaf_corrected]
+    standard_name: ash
+
