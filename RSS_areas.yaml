@@ -110,6 +110,20 @@ ECLC2_002:
     lower_left_xy: [-30, 35]
     upper_right_xy: [20, 60]
 
+ECLC3_002:
+  description: lat/lon over Europe
+  projection:
+    proj: longlat
+    datum: WGS84
+    no_defs: null
+    type: crs
+  shape:
+    height: 1024
+    width: 2048
+  area_extent:
+    lower_left_xy: [-30, 30]
+    upper_right_xy: [20, 55]
+
 ECLC2_002_merc:
   description: Mercator over Europe
   projection:
