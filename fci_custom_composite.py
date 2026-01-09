@@ -53,11 +53,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-r', nargs=2, default=(2000, 2000), type=int)
 parser.add_argument('-g', nargs=2, default=(1000, 2000), type=int)
 parser.add_argument('-b', nargs=1, default=(1000,), type=int)
-parser.add_argument('--out', required=True)
+parser.add_argument('--out')
 parser.add_argument('--data', required=True)
 parser.add_argument('--region', default='econtrail_002')
 parser.add_argument('--standard-name', default='ash')
 parser.add_argument('--sbaf', action='store_true')
+parser.add_argument('--utm', action='store_true')
+parser.add_argument('--out-dir', default='.')
+parser.add_argument('--size', default=512, type=int)
 args = parser.parse_args()
 
 etc = pathlib.Path(__file__).parent / 'etc_custom_ash_wmo'
@@ -91,7 +94,23 @@ fn = glob.glob(args.data + '/W*FCI*BODY*.nc')
 scn = satpy.Scene(filenames=fn, reader='fci_l1c_nc')
 
 scn.load([*queries['r'], *queries['g'], *queries['b']])
-scn_2 = scn.resample(ad, resampler='gradient_search')
-scn_2['ash'] = custom_ash(scn_2, queries, args.standard_name, sbaf_coefs=coefs)
 
-scn_2.save_dataset('ash', writer='simple_image', filename=args.out)
+if args.utm:
+    area_list = []
+    for zone in range(23, 37+1):
+        for lat_idx in range(6):
+            area_list.append( (zone, lat_idx, 0, 1000000, (lat_idx+1)*1000000, (lat_idx+2)*1000000) )
+
+    w = h = args.size
+    for area in area_list:
+        zone, frame, left, right, bottom, top = area
+        ad = pyresample.geometry.AreaDefinition('myUTM', 'UTM zone', 'myUTM', f"+proj=utm +zone={zone}", w, h, (left, bottom, right, top))
+        utm_scn = scn.resample(ad, resampler='gradient_search')
+        utm_scn['ash'] = custom_ash(utm_scn, queries, args.standard_name, sbaf_coefs=coefs)
+        utm_scn.save_dataset('ash', filename="MTI1_{name}_{start_time:%Y%m%d%H%M}"+f"_zone{zone:02d}_frame{frame:1d}.png",
+                              base_dir=args.out_dir)
+
+elif args.out:
+    scn_2 = scn.resample(ad, resampler='gradient_search')
+    scn_2['ash'] = custom_ash(scn_2, queries, args.standard_name, sbaf_coefs=coefs)
+    scn_2.save_dataset('ash', writer='simple_image', filename=args.out)
